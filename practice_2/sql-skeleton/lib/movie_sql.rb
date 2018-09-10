@@ -20,13 +20,35 @@ end
 # actors' name.
 def days_of_being_wild_cast
   MovieDatabase.execute(<<-SQL)
-  SQL
+    SELECT
+      name
+    FROM
+      actors
+    JOIN
+      castings ON castings.actor_id = actors.id
+    JOIN
+      movies ON castings.movie_id = movies.id
+    WHERE
+      movies.title = 'Days of Being Wild'
+    ORDER BY
+      actors.name
+    SQL
 end
 
 # 2. List the films 'Tsui Hark' has directed; order by
 # movie title.
 def tsui_hark_films
   MovieDatabase.execute(<<-SQL)
+    SELECT
+      movies.title
+    FROM
+      actors
+    JOIN
+      movies ON actors.id = movies.director
+    WHERE
+      actors.name = 'Tsui Hark'
+    ORDER BY
+      movies.title
   SQL
 end
 
@@ -37,6 +59,18 @@ end
 # (e.g. 'Mary-Kent') should not count.
 def kent_supporting_actor_films
   MovieDatabase.execute(<<-SQL)
+  SELECT
+    movies.title, actors.name
+  FROM
+    movies
+  JOIN
+    castings on castings.movie_id = movies.id
+  JOIN
+    actors on castings.actor_id = actors.id
+  WHERE
+    actors.name LIKE '%Kent'
+  ORDER BY
+    movies.title
   SQL
 end
 
